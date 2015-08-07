@@ -87,6 +87,7 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 		a.setEMail("mariorossi@gmail.com");
 		
 
+		System.out.println("Test");
 		DAOAgenzia daoag = new DAOAgenzia();
 		Agenzia ag = new Agenzia();
 		ag.setIdAgenzia(1);
