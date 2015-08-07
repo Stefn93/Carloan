@@ -16,7 +16,7 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 	public  void create(Operatore entity){
 		try {
 			connection.executeUpdateQuery("insert into persona(nome, cognome, datanascita, numtelefono, email)  values(" + entity.toStringAsPersona() + ");");
-			connection.executeUpdateQuery("insert into profilo(id, username, password) values( " + entity.getId() + ", ' " + entity.getUsername() + "', '" + Encrypt.getEncryptedString(entity.getPassword()) + "');");
+			connection.executeUpdateQuery("insert into profilo(id, username, password) values( " + entity.getId() + ", '" + entity.getUsername() + "', '" + Encrypt.getEncryptedString(entity.getPassword()) + "');");
 			if (entity instanceof Amministratore)
 				connection.executeUpdateQuery("INSERT INTO Operatore values('" + entity.getUsername() + "', " + entity.getAgenzia().getIdAgenzia() + ", true);");
 			else 
@@ -47,14 +47,15 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 	
 	public Operatore read(String pk){
 		Operatore operatore= null;
-		ResultSet rs = connection.executeReadQuery("select * from operatore inner join profilo on (operatore.username = profilo.username) where operatore.username = '" + pk + "';");
+		ResultSet rs = connection.executeReadQuery("select * from operatore inner join profilo on operatore.username = profilo.username where operatore.username = '" + pk + "';");
 		try {
-			if (rs.getBoolean("amministratore"))
-				operatore = new Amministratore();
-			else 
-				operatore = new Operatore();
-			
+
 			while(rs.next()){
+				if (rs.getInt("amministratore") == 1)
+					operatore = new Amministratore();
+				else 
+					operatore = new Operatore();
+				
 				operatore.setUsername(rs.getString("username"));
 				operatore.setAgenzia(new DAOAgenzia().read(rs.getString("agenzia")));
 				ResultSet anagrafica = connection.executeReadQuery("select * from persona where id = " + rs.getInt("id") + ";");
@@ -72,7 +73,17 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
  		return operatore;
 	}
 	public void delete(String pk){
-		connection.executeUpdateQuery("DELETE FROM operatore WHERE username = '" + pk + "';");
+		
+		//connection.executeUpdateQuery("DELETE FROM operatore WHERE username = '" + pk + "';");
+		ResultSet tmp = connection.executeReadQuery("select id from profilo where username = '" + pk + "';");
+		try {
+			while(tmp.next()) {
+				connection.executeUpdateQuery("delete from persona where id = " + tmp.getInt("id") + ";");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -87,7 +98,7 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 		a.setEMail("mariorossi@gmail.com");
 		
 
-		System.out.println("Test");
+
 		DAOAgenzia daoag = new DAOAgenzia();
 		Agenzia ag = new Agenzia();
 		ag.setIdAgenzia(1);
