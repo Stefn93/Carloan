@@ -17,6 +17,6 @@ public class Operatore extends Profilo {
 	
 	
 	public String toString() {
-		return Integer.toString(agenzia.getIdAgenzia());
+		return super.toString() + ", " + agenzia.getIdAgenzia();
 	}
 }

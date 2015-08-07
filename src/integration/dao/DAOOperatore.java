@@ -15,7 +15,7 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 	
 	public  void create(Operatore entity){
 		try {
-			connection.executeUpdateQuery("insert into persona(nome, cognome, datanascita, numtelefono, email)  values(" + entity.toStringAsPersona() + ");");
+			connection.executeUpdateQuery("insert into persona  values("+ entity.toStringAsPersona() + ");");
 			connection.executeUpdateQuery("insert into profilo(id, username, password) values( " + entity.getId() + ", '" + entity.getUsername() + "', '" + Encrypt.getEncryptedString(entity.getPassword()) + "');");
 			if (entity instanceof Amministratore)
 				connection.executeUpdateQuery("INSERT INTO Operatore values('" + entity.getUsername() + "', " + entity.getAgenzia().getIdAgenzia() + ", true);");
@@ -49,7 +49,6 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 		Operatore operatore= null;
 		ResultSet rs = connection.executeReadQuery("select * from operatore inner join profilo on operatore.username = profilo.username where operatore.username = '" + pk + "';");
 		try {
-
 			while(rs.next()){
 				if (rs.getInt("amministratore") == 1)
 					operatore = new Amministratore();
@@ -81,7 +80,6 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 				connection.executeUpdateQuery("delete from persona where id = " + tmp.getInt("id") + ";");
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -110,7 +108,7 @@ public class DAOOperatore extends DAOCarloan<Operatore> {
 		daoag.delete(Integer.toString(ag.getIdAgenzia()));
 		daoag.create(ag);
 		dao.create(a);
-		System.out.println(dao.read(Integer.toString(1)));
+		System.out.println(dao.read(a.getUsername()));
 	}
 	
 }
