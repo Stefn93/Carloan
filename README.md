@@ -1,4 +1,4 @@
-# Carloan-1
+Carloan
 
 Management software for a car-loaning enterprise.
 
@@ -13,4 +13,4 @@ Implemented patterns:
 - MVC
 
 Modeled with 7 entities.
-Data is stored on a MySQL database.
+Data is stored in a MySQL database.
